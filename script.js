@@ -63,8 +63,14 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+let loggedInUser;
 /////////////////////////////////////////////////
 // Functions
+function createUsernames(accounts){
+  accounts.forEach((account)=>{
+    account.username = account.owner.split(' ').map(item=>item.toLocaleLowerCase().slice(0,1)).join('').toString();
+  })
+}
 
 function displayMovements(movements){
   containerMovements.innerHTML= ' '
@@ -83,23 +89,23 @@ function displayMovements(movements){
   });
 }
 
-function displayBalance(currentAccount){
+function displayBalance(loggedInUser){
   labelBalance.innerHTML = ''
 
-  let currentBalance = currentAccount.movements.reduce((movement,accumulator)=>movement+accumulator,0);
+  let currentBalance = loggedInUser.movements.reduce((movement,accumulator)=>movement+accumulator,0);
 
   labelBalance.innerHTML = currentBalance + '$';
 }
 
-function displaySummary(currentAccount){
-  let income = currentAccount.movements.filter(movement=>movement > 0)
+function displaySummary(loggedInUser){
+  let income = loggedInUser.movements.filter(movement=>movement > 0)
   .reduce((movement,accumulator)=>movement+accumulator,0);
 
-  let spendings = currentAccount.movements.filter(movement=>movement < 0)
+  let spendings = loggedInUser.movements.filter(movement=>movement < 0)
   .reduce((movement,accumulator)=>movement+accumulator,0);
 
-  let interest = currentAccount.movements.filter(movement=>movement > 0)
-  .map(movement=>(movement * currentAccount.interestRate)/100)
+  let interest = loggedInUser.movements.filter(movement=>movement > 0)
+  .map(movement=>(movement * loggedInUser.interestRate)/100)
   .reduce((interest,accumulator)=>interest+accumulator,0);
 
   labelSumIn.innerHTML = income+'$';
@@ -107,7 +113,41 @@ function displaySummary(currentAccount){
   labelSumInterest.innerHTML = interest+'$';
 }
 
+function displayWelcomeMessage(loggedInUser){
+  labelWelcome.textContent = `Welcome back, ${loggedInUser.owner}`;
+}
 
-displayMovements(account1.movements);
-displayBalance(account1);
-displaySummary(account1);
+function startLogoutTimer(){
+  let timer = setInterval(()=>{},1000)
+}
+
+function updateUserInterface(loggedInUser){
+  displayMovements(loggedInUser.movements);
+  displayBalance(loggedInUser);
+  displaySummary(loggedInUser);
+  displayWelcomeMessage(loggedInUser);
+  startLogoutTimer();
+
+  containerApp.style.opacity = 1;
+}
+
+function inputIsValid(input){
+  return input.value.length > 0
+}
+
+function login(e){
+  e.preventDefault();
+
+  if(inputIsValid(inputLoginUsername))
+  {
+    loggedInUser = accounts.find(account=>
+      account.username === inputLoginUsername.value && account.pin === Number(inputLoginPin.value)
+    );
+    loggedInUser && updateUserInterface(loggedInUser);
+  }else{
+    alert("Please fill in all the fields");
+  }
+}
+
+createUsernames(accounts);
+btnLogin.addEventListener("click",login);

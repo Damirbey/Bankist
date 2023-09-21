@@ -67,6 +67,47 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // Functions
 
 function displayMovements(movements){
-  movements.forEach(movement=>console.log(movement));
+  containerMovements.innerHTML= ' '
+
+  movements.forEach((movement,index)=> {
+
+    let type = movement > 0 ? 'deposit' : 'withdrawal';
+
+    let html = `
+    <div class="movements__row">
+      <div class="movements__type movements__type--${type}">${index+1} ${type}</div>
+      <div class="movements__value">${movement} $</div>
+    </div>`
+
+    containerMovements.insertAdjacentHTML('afterBegin',html);
+  });
 }
-displayMovements(account1.movements)
+
+function displayBalance(currentAccount){
+  labelBalance.innerHTML = ''
+
+  let currentBalance = currentAccount.movements.reduce((movement,accumulator)=>movement+accumulator,0);
+
+  labelBalance.innerHTML = currentBalance + '$';
+}
+
+function displaySummary(currentAccount){
+  let income = currentAccount.movements.filter(movement=>movement > 0)
+  .reduce((movement,accumulator)=>movement+accumulator,0);
+
+  let spendings = currentAccount.movements.filter(movement=>movement < 0)
+  .reduce((movement,accumulator)=>movement+accumulator,0);
+
+  let interest = currentAccount.movements.filter(movement=>movement > 0)
+  .map(movement=>(movement * currentAccount.interestRate)/100)
+  .reduce((interest,accumulator)=>interest+accumulator,0);
+
+  labelSumIn.innerHTML = income+'$';
+  labelSumOut.innerHTML = Math.abs(spendings)+'$';
+  labelSumInterest.innerHTML = interest+'$';
+}
+
+
+displayMovements(account1.movements);
+displayBalance(account1);
+displaySummary(account1);

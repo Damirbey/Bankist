@@ -96,6 +96,7 @@ function updateUserInterface(loggedInUser){
 
 function displayMovements(movements){
   containerMovements.innerHTML= ' '
+  movements = sort ? movements.slice().sort((a,b)=>a-b) : movements;
 
   movements.forEach((movement,index)=> {
 
@@ -227,6 +228,12 @@ function login(e){
     alert("Please fill in all the fields");
   }
 }
+let sort = false;
+function sortMovements(){
+  sort = !sort;
+  displayMovements(loggedInUser.movements);
+}
 
 createUsernames(accounts);
 btnLogin.addEventListener("click",login);
+btnSort.addEventListener("click", sortMovements);

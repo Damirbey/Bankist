@@ -204,6 +204,7 @@
     font-size: 1.3rem;
     font-weight: 500;
     cursor: pointer;
+    align-self: center;
   }
   
   /* OPERATIONS */

@@ -273,9 +273,27 @@ function requestLoan(e){
 
 }
 
+function closeAccount(e){
+  e.preventDefault();
+  let accountToClose = {username:inputCloseUsername.value, pin: inputClosePin.value}
+  if(loggedInUser.username === accountToClose.username && 
+    loggedInUser.pin === Number(accountToClose.pin)){
+
+    const index =  accounts.findIndex((acc)=>acc.username == loggedInUser.username);
+    index >= 0 && accounts.splice(index,1);
+    
+    logout();
+    displayMessage("Your request was successful!");
+
+  }else{
+    displayMessage("Invalid Request!");
+  }
+}
+
 createUsernames(accounts);
 btnLogin.addEventListener("click",login);
 btnSort.addEventListener("click", sortMovements);
 btnLoan.addEventListener("click",requestLoan);
 overlay.addEventListener("click",closeModal);
 btnModal.addEventListener("click", closeModal);
+btnClose.addEventListener("click", closeAccount);

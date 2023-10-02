@@ -160,8 +160,7 @@ function formatNumberOfDays(date){
   const date2 = new Date(date);
 
   const timeDifference = Math.abs(date1 - date2);
-
-  const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
   if(daysDifference === 0){return 'Today'}
   if(daysDifference === 1){return 'Yesterday'}
@@ -206,6 +205,7 @@ function eraseInputs(){
   inputLoginUsername.value = "";
   inputLoginPin.value = "";
 }
+
 function logout(){
   hideContent();
 }
@@ -228,12 +228,29 @@ function login(e){
     alert("Please fill in all the fields");
   }
 }
+
 let sort = false;
 function sortMovements(){
   sort = !sort;
   displayMovements(loggedInUser.movements);
 }
 
+function requestLoan(e){
+  e.preventDefault();
+
+  let loanAmount = Number(inputLoanAmount.value);
+  
+  if(loanAmount > 0){
+    loggedInUser.movements.push(loanAmount);
+    loggedInUser.movementsDates.push(new Date());
+    console.log(loggedInUser)
+    alert("Your loan request was successful");
+    updateUserInterface(loggedInUser);
+  }
+
+}
+
 createUsernames(accounts);
 btnLogin.addEventListener("click",login);
 btnSort.addEventListener("click", sortMovements);
+btnLoan.addEventListener("click",requestLoan);

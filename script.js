@@ -95,7 +95,7 @@ function updateUserInterface(loggedInUser){
   displaySummary(loggedInUser);
   displayWelcomeMessage(loggedInUser);
   labelDate.textContent = formatCurrentDate(loggedInUser.locale);
-  //startLogoutTimer();
+  startLogoutTimer();
   showContent();
 }
 
@@ -176,7 +176,7 @@ function formatNumberOfDays(date){
 
 function startLogoutTimer(){
 
-  let time = 5;
+  let time = 300;
 
   let tick = function(){
     let minutes = Math.trunc(time/60).toString().padStart(2,0);
@@ -209,6 +209,11 @@ function hideContent(){
 function eraseInputs(){
   inputLoginUsername.value = "";
   inputLoginPin.value = "";
+  inputTransferTo.value = "";
+  inputTransferAmount.value = "";
+  inputLoanAmount.value = "";
+  inputCloseUsername.value = "";
+  inputClosePin.value = "";
 }
 
 function logout(){
@@ -264,7 +269,7 @@ function requestLoan(e){
   if(loanAmount > 0){
     loggedInUser.movements.push(loanAmount);
     loggedInUser.movementsDates.push(new Date());
-
+    eraseInputs();
     displayMessage("Your loan request was successful");
     updateUserInterface(loggedInUser);
   }else{
@@ -292,6 +297,26 @@ function closeAccount(e){
 
 function transferMoney(e){
   e.preventDefault();
+  if(Number(inputTransferAmount.value) < 0 || inputTransferTo.value === loggedInUser.username){
+    displayMessage("Invalid Operation!");
+    return;
+  }
+
+  let receiver = accounts.find((account)=>account.username === inputTransferTo.value);
+
+  if(receiver){
+      receiver.movements.push(Number(inputTransferAmount.value));
+      receiver.movementsDates.push(new Date());
+
+      loggedInUser.movements.push(Number(-inputTransferAmount.value));
+      loggedInUser.movementsDates.push(new Date());
+
+      eraseInputs();
+      updateUserInterface(loggedInUser);
+      displayMessage("Your transfer was successful!");
+  }else{
+    displayMessage("Invalid Operation!");
+  }
 }
 
 createUsernames(accounts);

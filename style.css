@@ -298,8 +298,9 @@
   }
 
   .modal{
-    width:20%;
-    height: 20%;
+    width:50%;
+    padding: 8rem;
+    text-align: center;
     position: absolute;
     top:30%;
     left: 50%;
@@ -307,7 +308,6 @@
     border-radius: 5px;
     box-shadow: 1px 1px 1px #888;
     background-color: rgba(255,255,255,0.9);
-    text-align: center;
     font-size: 2rem;
     z-index: 2;
   }
@@ -315,6 +315,7 @@
   .modal__btn{
     position: absolute;
     right: 0;
+    top: 0;
     border: none;
     padding: 0.5rem;
     outline: none;
@@ -322,6 +323,7 @@
     cursor: pointer;
     transition: all 0.2s;
   }
+ 
   .modal__btn:active{
     transform: translateY(2px);
   }

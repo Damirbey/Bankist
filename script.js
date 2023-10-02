@@ -290,6 +290,10 @@ function closeAccount(e){
   }
 }
 
+function transferMoney(e){
+  e.preventDefault();
+}
+
 createUsernames(accounts);
 btnLogin.addEventListener("click",login);
 btnSort.addEventListener("click", sortMovements);
@@ -297,3 +301,4 @@ btnLoan.addEventListener("click",requestLoan);
 overlay.addEventListener("click",closeModal);
 btnModal.addEventListener("click", closeModal);
 btnClose.addEventListener("click", closeAccount);
+btnTransfer.addEventListener("click", transferMoney)

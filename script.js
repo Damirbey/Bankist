@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////
 // Data
 const account1 = {
-  owner: "Jonas Schmedtmann",
+  owner: "Bobby Zamora",
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -57,6 +57,10 @@ const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
+const labelModal = document.querySelector('.modal__text');
+
+const modal = document.querySelector(".modal");
+const overlay = document.querySelector(".overlay");
 
 const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
@@ -66,6 +70,7 @@ const btnTransfer = document.querySelector('.form__btn--transfer');
 const btnLoan = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');
+const btnModal = document.querySelector('.modal__btn');
 
 const inputLoginUsername = document.querySelector('.login__input--user');
 const inputLoginPin = document.querySelector('.login__input--pin');
@@ -222,10 +227,11 @@ function login(e){
     loggedInUser = accounts.find(account=>
       account.username === inputLoginUsername.value && account.pin === Number(inputLoginPin.value)
     );
-    loggedInUser && updateUserInterface(loggedInUser);
+    loggedInUser ? updateUserInterface(loggedInUser) :
+    displayMessage('Invalid Credentials, please try again');
     eraseInputs();
   }else{
-    alert("Please fill in all the fields");
+    displayMessage("Please fill in all the fields");
   }
 }
 
@@ -233,6 +239,21 @@ let sort = false;
 function sortMovements(){
   sort = !sort;
   displayMovements(loggedInUser.movements);
+}
+
+function displayMessage(message){
+  openModal();
+  labelModal.textContent = message;
+}
+
+function openModal(){
+  modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+}
+
+function closeModal(){
+  modal.classList.add('hidden');
+  overlay.classList.add('hidden')
 }
 
 function requestLoan(e){
@@ -243,9 +264,11 @@ function requestLoan(e){
   if(loanAmount > 0){
     loggedInUser.movements.push(loanAmount);
     loggedInUser.movementsDates.push(new Date());
-    console.log(loggedInUser)
-    alert("Your loan request was successful");
+
+    displayMessage("Your loan request was successful");
     updateUserInterface(loggedInUser);
+  }else{
+    displayMessage("Invalid Request!");
   }
 
 }
@@ -254,3 +277,5 @@ createUsernames(accounts);
 btnLogin.addEventListener("click",login);
 btnSort.addEventListener("click", sortMovements);
 btnLoan.addEventListener("click",requestLoan);
+overlay.addEventListener("click",closeModal);
+btnModal.addEventListener("click", closeModal);
